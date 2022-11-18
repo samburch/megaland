@@ -1,0 +1,25 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given my email is not valid, I should be able to subscribe Adds error class to date input 1`] = `
+<input
+  autocomplete="email"
+  class="error"
+  id="email"
+  maxlength="254"
+  placeholder="Enter your email address"
+  type="email"
+  value=""
+/>
+`;
+
+exports[`Given my email is valid, I should be able to subscribe Adds success class to email input 1`] = `
+<input
+  autocomplete="email"
+  class="success"
+  id="email"
+  maxlength="254"
+  placeholder="Enter your email address"
+  type="email"
+  value="sam.burch85@gmail.com"
+/>
+`;

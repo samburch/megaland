@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Given that I have a valid date of birth, I can see how old I am Adds success class to date input 1`] = `
+<input
+  class="success"
+  id="dob"
+  type="date"
+  value="2000-01-01"
+/>
+`;
+
+exports[`Given that my date of birth is in the future, I should not be able to subscribe Adds error class to date input 1`] = `
+<input
+  class="error"
+  id="dob"
+  type="date"
+  value="2500-01-01"
+/>
+`;
