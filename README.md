@@ -38,7 +38,7 @@ This will open the project in a new window
 
 2. Run the test cases
 ```sh
-npm run dev
+npm run test
 ```
 
 **Approach**
