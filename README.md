@@ -7,7 +7,7 @@ Having issues with my version of xcode since updating to latest MacOS Ventura. B
 
 1. Clone this repo
 ```sh
-npm install https://github.com/samburch/megaland.git
+git clone https://github.com/samburch/megaland.git
 ```
 
 2. Goto project folder root from terminal
