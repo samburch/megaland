@@ -1,21 +1,22 @@
 interface ValueObject {
   date: string;
-  age: number;
+  age?: number;
 }
 
 export class DateOfBirth implements ValueObject {
-  readonly age: number;
+  age?: number;
   constructor(public date: string) {
-    this.age = this.calcAge;
-    this.date = this.isValidDate(date);
+    this.age = DateOfBirth.getAge(date);
+    this.date = DateOfBirth.isValidDate(date);
   }
 
-  private get calcAge(): number {
-    return new Date().getFullYear() - new Date(this.date).getFullYear();
+  static getAge(value: string): number {
+    return new Date().getFullYear() - new Date(value).getFullYear();
   }
 
-  isValidDate(date: string): any {
-    if (this.calcAge < 13) return "You must be 13 years old or more";
+  static isValidDate(date: string): any {
+    const age = this.getAge(date);
+    if (age < 13) throw Error("You must be 13 years old or more");
     return new Date(date).toISOString();
   }
 }

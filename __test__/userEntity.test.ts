@@ -1,4 +1,5 @@
 import { describe, expect, test } from "@jest/globals";
+import { DateOfBirth } from "../src/DateOfBirth";
 import { UserEntity } from "../src/UserEntity";
 import { sameUserOne, sameUserTwo } from "./mockdata";
 
@@ -102,17 +103,10 @@ describe("Given that the user name is invalid", () => {
 });
 
 describe("Given that the users date of birth is below minimum age", () => {
-  test("Then should not be able to sign up", () => {
-    const user = new UserEntity(
-      "Caspian",
-      "Burch",
-      "me@me.com",
-      "12345",
-      "2999-01-01"
-    );
-    console.log(user.age);
-    expect(user.dateOfBirth["date"]).toMatch(
-      "You must be 13 years old or more"
-    );
+  test("Then they should not be able to sign up", () => {
+    const underAge = "2999-01-01";
+    expect(() => {
+      DateOfBirth.isValidDate(underAge);
+    }).toThrowError("You must be 13 years old or more");
   });
 });
