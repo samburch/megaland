@@ -1,30 +1,88 @@
-export interface User {
+import { Entity } from "./Entity";
+import { DateOfBirth } from "./DateOfBirth";
+
+interface User {
   firstName: string;
   lastName: string;
-  dob: Date;
   email: string;
   password: string;
 }
 
-export class UserRegistration implements User {
+export class UserEntity extends Entity implements User {
   constructor(
     public firstName: string,
     public lastName: string,
-    public dob: Date,
     public email: string,
-    public password: string
+    readonly password: string,
+    readonly dateOfBirth: string
   ) {
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.dob = dob;
-    this.email = email;
-    this.password = password;
+    super();
+    this.firstName = this.createName(firstName);
+    this.lastName = this.createName(lastName);
+    this.password = this.createPassword(password);
+    this.email = this.createEmail(email);
+    this.dateOfBirth = this.createDate(dateOfBirth) as any;
   }
 
-  get age(): number {
-    return UserRegistration.calculateAge(this.dob);
+  // Getters
+  get age() {
+    return this.dateOfBirth["age" as unknown as number];
   }
 
+  get userFirstName(): string {
+    return this.firstName;
+  }
+
+  get userLastName(): string {
+    return this.lastName;
+  }
+
+  get userEmail(): string {
+    return this.email;
+  }
+
+  // Validator methods
+  static isValidInput(value: string): string {
+    if (value.trim() === "") throw Error("Please enter");
+    if (value.length > 32) throw Error("Must be less than 32 characters");
+    return value;
+  }
+
+  static isValidEmail(value: string): boolean {
+    if (value.length > 254) throw Error("Email must not exceed 254 characters");
+    const email = value.toLowerCase();
+    const validEmail: RegExp =
+      /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+    validEmail.test(email);
+    return validEmail.test(email);
+  }
+
+  static isValidPassword(value: string): string {
+    if (value === undefined || value === "") throw Error("Invalid password");
+    if (value.length > 32) throw Error("Must be less than 32 characters");
+    return value;
+  }
+
+  // Factory functions
+  private createDate(value: string): DateOfBirth {
+    return new DateOfBirth(value);
+  }
+
+  private createEmail(email: string): string {
+    return UserEntity.isValidEmail(email) ? email : "Invalid email";
+  }
+
+  private createName(value: string): string {
+    const name = value[0].toUpperCase() + value.slice(1);
+    return UserEntity.isValidInput(name) ? name : "Invalid name";
+  }
+
+  private createPassword(value: string): string {
+    const password = value.toLowerCase();
+    return UserEntity.isValidInput(password) ? password : "Invalid password";
+  }
+
+  // UI validation
   static validateInput(
     input: HTMLInputElement,
     message: string,
@@ -34,18 +92,6 @@ export class UserRegistration implements User {
     error.innerText = message;
     input.className = valid ? "success" : "error";
     return !valid;
-  }
-
-  static formatName(value: string): string {
-    if (value[0] === undefined) return "Anonymous";
-    return value[0].toUpperCase() + value.slice(1);
-  }
-
-  static calculateAge(value: Date): number {
-    const todaysDate = new Date().getFullYear();
-    const selectedDate = new Date(value).getFullYear();
-    const age: number = todaysDate - selectedDate;
-    return age;
   }
 
   static validate(input: HTMLInputElement): boolean {
@@ -60,18 +106,15 @@ export class UserRegistration implements User {
           return false;
         } else {
           this.validateInput(input, "", true);
-          this.formatName(value);
           return true;
         }
       case "email":
         const email: string = value.toLowerCase().trim();
-        const validEmail: RegExp =
-          /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
         if (email === "") {
           this.validateInput(input, "Email must not be blank", false);
           return false;
         }
-        if (!email.match(validEmail)) {
+        if (!this.isValidEmail) {
           this.validateInput(
             input,
             "Please enter a valid email address",
@@ -84,19 +127,11 @@ export class UserRegistration implements User {
         }
 
       case "date":
-        const age = this.calculateAge(new Date(value));
         if (value === "") {
           this.validateInput(input, "You must enter your birthday", false);
           return false;
-        }
-        if (Math.sign(age) === -1) {
-          this.validateInput(
-            input,
-            "Your birthday must be a past date!",
-            false
-          );
-          return false;
-        } else if (age < 13) {
+        } else if (0) {
+          //FIX THIS
           this.validateInput(
             input,
             "You must be more than 13 years old",

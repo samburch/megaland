@@ -1,5 +1,5 @@
 import "./megaLandForm.css";
-import { UserRegistration } from "./megaLandForm";
+import { UserEntity } from "./UserEntity";
 
 const registrationForm = document.querySelector<HTMLFormElement>(
   "#megaland-registration"
@@ -7,7 +7,7 @@ const registrationForm = document.querySelector<HTMLFormElement>(
 
 registrationForm.addEventListener("change", function (event) {
   const input = event.target as HTMLInputElement;
-  UserRegistration.validate(input);
+  UserEntity.validate(input);
 });
 
 registrationForm.addEventListener("submit", function (event) {
@@ -15,37 +15,31 @@ registrationForm.addEventListener("submit", function (event) {
 
   const formElements = registrationForm.elements as HTMLFormControlsCollection;
 
-  const firstname = UserRegistration.validate(
+  const firstname = UserEntity.validate(
     formElements[<any>"firstname"] as HTMLInputElement
   );
-  const lastname: boolean = UserRegistration.validate(
+  const lastname: boolean = UserEntity.validate(
     formElements[<any>"lastname"] as HTMLInputElement
   );
-  const dateOfBirth: boolean = UserRegistration.validate(
+  const dateOfBirth: boolean = UserEntity.validate(
     formElements[<any>"dob"] as HTMLInputElement
   );
-  const email: boolean = UserRegistration.validate(
+  const email: boolean = UserEntity.validate(
     formElements[<any>"email"] as HTMLInputElement
   );
-  const password: boolean = UserRegistration.validate(
+  const password: boolean = UserEntity.validate(
     formElements[<any>"password"] as HTMLInputElement
   );
-  // Make the object properties / values immutable
+
   if (firstname && lastname && email && dateOfBirth && password) {
-    const fn: string = UserRegistration.formatName(
-      (formElements[<any>"firstname"] as HTMLInputElement).value
-    );
-    const ln: string = UserRegistration.formatName(
-      (formElements[<any>"lastname"] as HTMLInputElement).value
-    );
-    const dob: Date = (formElements[<any>"dob"] as HTMLInputElement)
-      .value as unknown as Date;
+    const fn: string = (formElements[<any>"firstname"] as HTMLInputElement)
+      .value;
+    const ln: string = (formElements[<any>"lastname"] as HTMLInputElement)
+      .value;
+    const dob = <string>(formElements[<any>"dob"] as HTMLInputElement).value;
     const em = (formElements[<any>"email"] as HTMLInputElement).value;
     const pw = (formElements[<any>"password"] as HTMLInputElement).value;
-    const user = Object.freeze(new UserRegistration(fn, ln, dob, em, pw));
-    // Log user
-    console.log(user);
-    // Get user age
-    console.log(user.age);
+    const userRegistration = new UserEntity(fn, ln, em, pw, dob);
+    console.log(userRegistration);
   }
 });
