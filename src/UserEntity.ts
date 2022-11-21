@@ -14,19 +14,19 @@ export class UserEntity extends Entity implements User {
     public lastName: string,
     public email: string,
     readonly password: string,
-    readonly dateOfBirth: string
+    readonly dateOfBirth: DateOfBirth
   ) {
     super();
     this.firstName = this.createName(firstName);
     this.lastName = this.createName(lastName);
     this.password = this.createPassword(password);
     this.email = this.createEmail(email);
-    this.dateOfBirth = this.createDate(dateOfBirth) as any;
+    this.dateOfBirth = this.createDate(<any>dateOfBirth);
   }
 
   // Getters
   get age() {
-    return this.dateOfBirth["age" as unknown as number];
+    return this.dateOfBirth["age"];
   }
 
   get userFirstName(): string {
@@ -58,8 +58,20 @@ export class UserEntity extends Entity implements User {
   }
 
   static isValidPassword(value: string): string {
-    if (value === undefined || value === "") throw Error("Invalid password");
-    if (value.length > 32) throw Error("Must be less than 32 characters");
+    const MIN_LENGTH = 8;
+    const MAX_LENGTH = 32;
+    const PW_VALIDATION: RegExp =
+      /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/;
+    if (value === undefined || value === "")
+      throw Error("Password must not be empty");
+    if (value.length < MIN_LENGTH)
+      throw Error(`Password must be minimum of ${MIN_LENGTH}`);
+    if (value.length > MAX_LENGTH)
+      throw Error(`Password must not exceed ${MAX_LENGTH}`);
+    if (!PW_VALIDATION)
+      throw Error(
+        `Password must be btween ${MIN_LENGTH} - ${MAX_LENGTH} and contain at last 1 uppercase character, 1 digit and 1 symbol  i.e. ( ! % ^ " )`
+      );
     return value;
   }
 
@@ -78,7 +90,7 @@ export class UserEntity extends Entity implements User {
   }
 
   private createPassword(value: string): string {
-    const password = value.toLowerCase();
+    const password = value;
     return UserEntity.isValidInput(password) ? password : "Invalid password";
   }
 
